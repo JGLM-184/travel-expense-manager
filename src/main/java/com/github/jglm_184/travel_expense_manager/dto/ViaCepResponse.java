@@ -17,7 +17,6 @@ public class ViaCepResponse {
     private String city;
     @JsonProperty("estado")
     private String state;
-    private String status;
     @JsonProperty("erro")
     private boolean error;
 }

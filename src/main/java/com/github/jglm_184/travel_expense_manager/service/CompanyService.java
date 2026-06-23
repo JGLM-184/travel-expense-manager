@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 
 @Service
 @RequiredArgsConstructor
@@ -121,7 +122,7 @@ public class CompanyService {
             }
 
             return companyMapper.toCompany(response);
-        } catch (org.springframework.web.client.HttpClientErrorException e) {
+        } catch (HttpClientErrorException e) {
             throw new BusinessException("External API error: Unable to retrieve company data for the provided CNPJ.");
         }
     }

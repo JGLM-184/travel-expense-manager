@@ -12,6 +12,7 @@ import com.github.jglm_184.travel_expense_manager.util.FormatterUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 
 @Service
 @RequiredArgsConstructor
@@ -51,7 +52,7 @@ public class AddressService {
             }
 
             return addressMapper.toAddress(response);
-        } catch (org.springframework.web.client.HttpClientErrorException e) {
+        } catch (HttpClientErrorException e) {
             throw new BusinessException("Invalid zipCode format for external lookup.");
         }
     }
