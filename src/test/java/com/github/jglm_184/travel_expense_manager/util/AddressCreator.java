@@ -18,7 +18,7 @@ public class AddressCreator {
                 .build();
     }
 
-    public static AddressCreateDTO createAddressCreateDTO() {
+    public static AddressCreateDTO createValidAddressCreateDTO() {
         return AddressCreateDTO.builder()
                 .zipCode("11111111")
                 .street("Praça da Sé")
@@ -28,7 +28,7 @@ public class AddressCreator {
                 .build();
     }
 
-    public static ViaCepResponse createViaCepResponse() {
+    public static ViaCepResponse createValidViaCepResponse() {
         return ViaCepResponse.builder()
                 .zipCode("01001000")
                 .street("Praça da Sé")
@@ -45,7 +45,7 @@ public class AddressCreator {
                 .build();
     }
 
-    public static AddressCreateDTO createAddressCreateDTONotFullyFilled() {
+    public static AddressCreateDTO createIncompleteAddressCreateDTO() {
         return AddressCreateDTO.builder()
                 .zipCode("01001000")
                 .build();

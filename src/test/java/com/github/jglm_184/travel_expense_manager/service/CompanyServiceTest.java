@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Optional;
 
 @ExtendWith(SpringExtension.class)
+@DisplayName("Unit tests for CompanyService")
 class CompanyServiceTest {
 
     @Mock
@@ -47,7 +48,7 @@ class CompanyServiceTest {
     private FormatterUtil formatterUtil;
 
     @InjectMocks
-    private CompanyService companyServiceMock;
+    private CompanyService companyService;
 
     @BeforeEach
     void setUp() {
@@ -63,14 +64,14 @@ class CompanyServiceTest {
     }
 
     @Test
-    @DisplayName("findAllActiveCompanies returns list of active companies inside page object when successful")
-    void findAllActiveCompanies_ReturnsListOfActiveCompaniesInsidePageObject_WhenSuccessful() {
+    @DisplayName("Returns a page of active companies when companies exist")
+    void findAllActiveCompanies_ReturnsPageOfActiveCompanies_WhenCompaniesExist() {
         BDDMockito.when(companyMapper.toDto(ArgumentMatchers.any(Company.class)))
-                .thenReturn(CompanyCreator.createValidActiveCompanyDTODetails());
+                .thenReturn(CompanyCreator.createActiveCompanyDetailsDTO());
 
         String expectedCompanyName = CompanyCreator.createValidActiveCompany().getCompanyName();
 
-        Page<CompanyDetailsDTO> companyDetailsDTOPage = companyServiceMock.findAllActiveCompanies(
+        Page<CompanyDetailsDTO> companyDetailsDTOPage = companyService.findAllActiveCompanies(
                 PageRequest.of(1, 1));
 
         Assertions.assertThat(companyDetailsDTOPage).isNotNull();
@@ -86,14 +87,14 @@ class CompanyServiceTest {
     }
 
     @Test
-    @DisplayName("findAllInactiveCompanies returns list of inactive companies inside page object when successful")
-    void findAllInactiveCompanies_ReturnsListOfInactiveCompaniesInsidePageObject_WhenSuccessful() {
+    @DisplayName("Returns a page of inactive companies when companies exist")
+    void findAllInactiveCompanies_ReturnsPageOfInactiveCompanies_WhenCompaniesExist() {
         BDDMockito.when(companyMapper.toDto(ArgumentMatchers.any(Company.class)))
-                .thenReturn(CompanyCreator.createValidInactiveCompanyDTODetails());
+                .thenReturn(CompanyCreator.createInactiveCompanyDetailsDTO());
 
         String expectedCompanyName = CompanyCreator.createValidInactiveCompany().getCompanyName();
 
-        Page<CompanyDetailsDTO> companyDetailsDTOPage = companyServiceMock.findAllInactiveCompanies(
+        Page<CompanyDetailsDTO> companyDetailsDTOPage = companyService.findAllInactiveCompanies(
                 PageRequest.of(1, 1));
 
         Assertions.assertThat(companyDetailsDTOPage).isNotNull();
@@ -109,11 +110,11 @@ class CompanyServiceTest {
     }
 
     @Test
-    @DisplayName("createCompany saves and returns company details when DTO is fully filled without calling ReceitaWS")
-    void createCompany_SavesAndReturnsCompanyDetails_WhenDtoIsFullyFilled() {
-        CompanyCreateDTO dto = CompanyCreator.createCompanyCreateDTO();
+    @DisplayName("Saves and returns company details when DTO is fully filled")
+    void createCompany_SavesAndReturnsCompanyDetails_WhenDTOIsFullyFilled() {
+        CompanyCreateDTO dto = CompanyCreator.createValidCompanyCreateDTO();
         Company companyToSave = CompanyCreator.createValidActiveCompany();
-        CompanyDetailsDTO expectedResponse = CompanyCreator.createValidActiveCompanyDTODetails();
+        CompanyDetailsDTO expectedResponse = CompanyCreator.createActiveCompanyDetailsDTO();
 
         BDDMockito.when(addressService.getOrCreateAddress(ArgumentMatchers.any()))
                 .thenReturn(AddressCreator.createValidAddress());
@@ -127,7 +128,7 @@ class CompanyServiceTest {
         BDDMockito.when(companyMapper.toDto(ArgumentMatchers.any(Company.class)))
                 .thenReturn(expectedResponse);
 
-        CompanyDetailsDTO actualResponse = companyServiceMock.createCompany(dto);
+        CompanyDetailsDTO actualResponse = companyService.createCompany(dto);
 
         Assertions.assertThat(actualResponse).isNotNull();
         Assertions.assertThat(actualResponse.getCnpj()).isEqualTo(dto.getCnpj());
@@ -140,17 +141,17 @@ class CompanyServiceTest {
     }
 
     @Test
-    @DisplayName("createCompany fetches data from ReceitaWS, saves and returns company details when DTO contains only CNPJ")
-    void createCompany_FetchesFromReceitaWSAndReturnsCompanyDetails_WhenDtoContainsOnlyCnpj() {
-        CompanyCreateDTO dto = CompanyCreator.createCompanyCreateDTOWithOnlyCnpj();
+    @DisplayName("Fetches company data from ReceitaWS and returns company details when only CNPJ is provided")
+    void createCompany_FetchesDataFromReceitaWSAndReturnsCompanyDetails_WhenOnlyCnpjIsProvided() {
+        CompanyCreateDTO dto = CompanyCreator.createValidCompanyCreateDTOWithOnlyCnpj();
         Company companyToSave = CompanyCreator.createValidActiveCompany();
-        CompanyDetailsDTO expectedResponse = CompanyCreator.createValidActiveCompanyDTODetails();
+        CompanyDetailsDTO expectedResponse = CompanyCreator.createActiveCompanyDetailsDTO();
 
         BDDMockito.when(formatterUtil.cleanNumbers(ArgumentMatchers.anyString()))
                 .thenReturn("11222333000100");
 
         BDDMockito.when(receitaWSClient.findCnpj(ArgumentMatchers.anyString()))
-                .thenReturn(CompanyCreator.createReceitaWSResponse());
+                .thenReturn(CompanyCreator.createValidReceitaWSResponse());
 
         BDDMockito.when(addressService.getOrCreateAddress(ArgumentMatchers.any()))
                 .thenReturn(AddressCreator.createValidAddress());
@@ -164,7 +165,7 @@ class CompanyServiceTest {
         BDDMockito.when(companyMapper.toDto(ArgumentMatchers.any(Company.class)))
                 .thenReturn(expectedResponse);
 
-        CompanyDetailsDTO actualResponse = companyServiceMock.createCompany(dto);
+        CompanyDetailsDTO actualResponse = companyService.createCompany(dto);
 
         Assertions.assertThat(actualResponse).isNotNull();
         Assertions.assertThat(actualResponse.getCnpj()).isEqualTo(expectedResponse.getCnpj());
@@ -177,9 +178,9 @@ class CompanyServiceTest {
     }
 
     @Test
-    @DisplayName("createCompany throws BusinessException when cnpj already exists when successful")
-    void createCompany_ThrowsBusinessException_WhenCnpjAlreadyExists_WhenSuccessful() {
-        CompanyCreateDTO dto = CompanyCreator.createCompanyCreateDTO();
+    @DisplayName("Throws BusinessException when company CNPJ already exists")
+    void createCompany_ThrowsBusinessException_WhenCnpjAlreadyExists() {
+        CompanyCreateDTO dto = CompanyCreator.createValidCompanyCreateDTO();
 
         BDDMockito.when(formatterUtil.cleanNumbers(ArgumentMatchers.anyString()))
                 .thenReturn("11222333000100");
@@ -187,7 +188,7 @@ class CompanyServiceTest {
         BDDMockito.when(companyRepository.findByCnpj("11222333000100"))
                 .thenReturn(Optional.of(CompanyCreator.createValidActiveCompany()));
 
-        Throwable thrown = Assertions.catchThrowable(() -> companyServiceMock.createCompany(dto));
+        Throwable thrown = Assertions.catchThrowable(() -> companyService.createCompany(dto));
 
         Assertions.assertThat(thrown)
                 .isNotNull()
@@ -198,11 +199,11 @@ class CompanyServiceTest {
     }
 
     @Test
-    @DisplayName("updateCompany updates and returns company details when successful")
-    void updateCompany_UpdatesAndReturnsCompanyDetails_WhenSuccessful() {
-        CompanyUpdateDTO updateDto = CompanyCreator.createCompanyUpdateDTO();
+    @DisplayName("Updates and returns company details when company exists")
+    void updateCompany_UpdatesAndReturnsCompanyDetails_WhenCompanyExists() {
+        CompanyUpdateDTO updateDto = CompanyCreator.createValidCompanyUpdateDTO();
         Company existingCompany = CompanyCreator.createValidActiveCompany();
-        CompanyDetailsDTO expectedResponse = CompanyCreator.createValidActiveCompanyDTODetails();
+        CompanyDetailsDTO expectedResponse = CompanyCreator.createActiveCompanyDetailsDTO();
 
         BDDMockito.when(companyRepository.findByIdAndActiveTrue(ArgumentMatchers.anyLong()))
                 .thenReturn(Optional.of(existingCompany));
@@ -216,21 +217,21 @@ class CompanyServiceTest {
         BDDMockito.when(companyMapper.toDto(ArgumentMatchers.any(Company.class)))
                 .thenReturn(expectedResponse);
 
-        CompanyDetailsDTO actualResponse = companyServiceMock.updateCompany(1L, updateDto);
+        CompanyDetailsDTO actualResponse = companyService.updateCompany(1L, updateDto);
 
         Assertions.assertThat(actualResponse).isNotNull();
         BDDMockito.then(companyRepository).should().save(ArgumentMatchers.any(Company.class));
     }
 
     @Test
-    @DisplayName("updateCompany throws ResourceNotFoundException when company is not found or inactive when successful")
-    void updateCompany_ThrowsResourceNotFoundException_WhenCompanyNotFoundOrInactive_WhenSuccessful() {
-        CompanyUpdateDTO updateDto = CompanyCreator.createCompanyUpdateDTO();
+    @DisplayName("Throws ResourceNotFoundException when company is not found or inactive")
+    void updateCompany_ThrowsResourceNotFoundException_WhenCompanyIsNotFoundOrInactive() {
+        CompanyUpdateDTO updateDto = CompanyCreator.createValidCompanyUpdateDTO();
 
         BDDMockito.when(companyRepository.findByIdAndActiveTrue(ArgumentMatchers.anyLong()))
                 .thenReturn(Optional.empty());
 
-        Throwable thrown = Assertions.catchThrowable(() -> companyServiceMock.updateCompany(1L, updateDto));
+        Throwable thrown = Assertions.catchThrowable(() -> companyService.updateCompany(1L, updateDto));
 
         Assertions.assertThat(thrown)
                 .isNotNull()
@@ -242,26 +243,26 @@ class CompanyServiceTest {
     }
 
     @Test
-    @DisplayName("deactivateCompany deactivates company when successful")
-    void deactivateCompany_DeactivatesCompany_WhenSuccessful() {
+    @DisplayName("Deactivates company when company is active")
+    void deactivateCompany_DeactivatesCompany_WhenCompanyIsActive() {
         Company existingCompany = CompanyCreator.createValidActiveCompany();
 
         BDDMockito.when(companyRepository.findByIdAndActiveTrue(ArgumentMatchers.anyLong()))
                 .thenReturn(Optional.of(existingCompany));
 
-        companyServiceMock.deactivateCompany(1L);
+        companyService.deactivateCompany(1L);
 
         Assertions.assertThat(existingCompany.isActive()).isFalse();
         BDDMockito.then(companyRepository).should().save(existingCompany);
     }
 
     @Test
-    @DisplayName("deactivateCompany throws ResourceNotFoundException when company not found or already inactive when successful")
-    void deactivateCompany_ThrowsResourceNotFoundException_WhenCompanyNotFoundOrAlreadyInactive_WhenSuccessful() {
+    @DisplayName("Throws ResourceNotFoundException when company is not found or already inactive")
+    void deactivateCompany_ThrowsResourceNotFoundException_WhenCompanyIsNotFoundOrAlreadyInactive() {
         BDDMockito.when(companyRepository.findByIdAndActiveTrue(ArgumentMatchers.anyLong()))
                 .thenReturn(Optional.empty());
 
-        Throwable thrown = Assertions.catchThrowable(() -> companyServiceMock.deactivateCompany(1L));
+        Throwable thrown = Assertions.catchThrowable(() -> companyService.deactivateCompany(1L));
 
         Assertions.assertThat(thrown)
                 .isNotNull()
@@ -272,26 +273,26 @@ class CompanyServiceTest {
     }
 
     @Test
-    @DisplayName("activateCompany activates company when successful")
-    void activateCompany_ActivatesCompany_WhenSuccessful() {
+    @DisplayName("Activates company when company is inactive")
+    void activateCompany_ActivatesCompany_WhenCompanyIsInactive() {
         Company existingInactiveCompany = CompanyCreator.createValidInactiveCompany();
 
         BDDMockito.when(companyRepository.findByIdAndActiveFalse(ArgumentMatchers.anyLong()))
                 .thenReturn(Optional.of(existingInactiveCompany));
 
-        companyServiceMock.activateCompany(1L);
+        companyService.activateCompany(1L);
 
         Assertions.assertThat(existingInactiveCompany.isActive()).isTrue();
         BDDMockito.then(companyRepository).should().save(existingInactiveCompany);
     }
 
     @Test
-    @DisplayName("activateCompany throws ResourceNotFoundException when company not found or already active when successful")
-    void activateCompany_ThrowsResourceNotFoundException_WhenCompanyNotFoundOrAlreadyActive_WhenSuccessful() {
+    @DisplayName("Throws ResourceNotFoundException when company is not found or already active")
+    void activateCompany_ThrowsResourceNotFoundException_WhenCompanyIsNotFoundOrAlreadyActive() {
         BDDMockito.when(companyRepository.findByIdAndActiveFalse(ArgumentMatchers.anyLong()))
                 .thenReturn(Optional.empty());
 
-        Throwable thrown = Assertions.catchThrowable(() -> companyServiceMock.activateCompany(1L));
+        Throwable thrown = Assertions.catchThrowable(() -> companyService.activateCompany(1L));
 
         Assertions.assertThat(thrown)
                 .isNotNull()

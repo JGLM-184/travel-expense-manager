@@ -31,24 +31,24 @@ public class CompanyController {
     }
 
     @PostMapping
-    public ResponseEntity<CompanyDetailsDTO> createCompany (@Valid @RequestBody CompanyCreateDTO companyCreateDTO) {
+    public ResponseEntity<CompanyDetailsDTO> createCompany(@Valid @RequestBody CompanyCreateDTO companyCreateDTO) {
         return new ResponseEntity<>(companyService.createCompany(companyCreateDTO), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CompanyDetailsDTO> updateCompany (@PathVariable Long id,
-                                                            @Valid @RequestBody CompanyUpdateDTO companyUpdateDTO) {
+    public ResponseEntity<CompanyDetailsDTO> updateCompany(@PathVariable Long id,
+                                                           @Valid @RequestBody CompanyUpdateDTO companyUpdateDTO) {
         return new ResponseEntity<>(companyService.updateCompany(id, companyUpdateDTO), HttpStatus.OK);
     }
 
     @PutMapping("/activate/{id}")
-    public ResponseEntity<Void> deactivateCompany (@PathVariable Long id) {
+    public ResponseEntity<Void> activateCompany(@PathVariable Long id) {
         companyService.activateCompany(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PutMapping("/deactivate/{id}")
-    public ResponseEntity<Void> activateCompany (@PathVariable Long id) {
+    public ResponseEntity<Void> deactivateCompany(@PathVariable Long id) {
         companyService.deactivateCompany(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

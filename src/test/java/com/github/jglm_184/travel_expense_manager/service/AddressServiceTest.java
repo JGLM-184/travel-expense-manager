@@ -38,7 +38,7 @@ class AddressServiceTest {
     private FormatterUtil formatterUtil;
 
     @InjectMocks
-    private AddressService addressServiceMock;
+    private AddressService addressService;
 
     @BeforeEach
     void setUp() {
@@ -49,7 +49,7 @@ class AddressServiceTest {
                 .thenReturn(AddressCreator.createValidAddress());
 
         BDDMockito.when(viaCepClient.findAddress(ArgumentMatchers.anyString()))
-                .thenReturn(AddressCreator.createViaCepResponse());
+                .thenReturn(AddressCreator.createValidViaCepResponse());
 
         BDDMockito.when(addressMapper.toAddress(ArgumentMatchers.any(AddressCreateDTO.class)))
                 .thenReturn(AddressCreator.createValidAddress());
@@ -59,15 +59,14 @@ class AddressServiceTest {
     }
 
     @Test
-    @DisplayName("getOrCreateAddress returns a registered address when the provided ZIP code " +
-            "is already registered in the database when successful")
-    void getOrCreateAddress_ReturnsRegisteredAdddress_WhenSuccessful() {
+    @DisplayName("Returns a registered address when ZIP code already exists")
+    void getOrCreateAddress_ReturnsRegisteredAddress_WhenZipCodeAlreadyExists() {
         Address validAddress = AddressCreator.createValidAddress();
         Long expectedId = validAddress.getId();
         String expectedZipCode = validAddress.getZipCode();
 
-        AddressCreateDTO dto = AddressCreator.createAddressCreateDTO();
-        Address addressForAssertion = addressServiceMock.getOrCreateAddress(dto);
+        AddressCreateDTO dto = AddressCreator.createValidAddressCreateDTO();
+        Address addressForAssertion = addressService.getOrCreateAddress(dto);
 
         Assertions.assertThat(addressForAssertion).isNotNull();
         Assertions.assertThat(addressForAssertion.getId()).isEqualTo(expectedId);
@@ -78,14 +77,13 @@ class AddressServiceTest {
     }
 
     @Test
-    @DisplayName("getOrCreateAddress save a new address and returns when the provided ZIP code " +
-            "is not registered in the database when successful")
-    void getOrCreateAddress_SaveAndReturnsdAdddress_WhenSuccessful() {
+    @DisplayName("Saves and returns a new address when ZIP code does not exist")
+    void getOrCreateAddress_SavesAndReturnsAddress_WhenZipCodeDoesNotExist() {
         BDDMockito.when(addressRepository.findByZipCode(ArgumentMatchers.anyString()))
                 .thenReturn(Optional.empty());
 
-        AddressCreateDTO dto = AddressCreator.createAddressCreateDTO();
-        Address addressForAssertion = addressServiceMock.getOrCreateAddress(dto);
+        AddressCreateDTO dto = AddressCreator.createValidAddressCreateDTO();
+        Address addressForAssertion = addressService.getOrCreateAddress(dto);
 
         Assertions.assertThat(addressForAssertion)
                 .isNotNull()
@@ -95,16 +93,16 @@ class AddressServiceTest {
     }
 
     @Test
-    @DisplayName("getOrCreateAddress returns a resource not found exception when successful")
-    void getOrCreateAddress_ResourceNotFoundException_WhenSuccessful() {
+    @DisplayName("Throws ResourceNotFoundException when ZIP code does not exist")
+    void getOrCreateAddress_ThrowsResourceNotFoundException_WhenZipCodeDoesNotExist() {
         BDDMockito.when(addressRepository.findByZipCode(ArgumentMatchers.anyString()))
                 .thenReturn(Optional.empty());
 
         BDDMockito.when(viaCepClient.findAddress(ArgumentMatchers.anyString()))
                 .thenReturn(AddressCreator.createViaCepResponseWithError());
 
-        AddressCreateDTO dto = AddressCreator.createAddressCreateDTONotFullyFilled();
-        Throwable thrown = Assertions.catchThrowable(() -> addressServiceMock.getOrCreateAddress(dto));
+        AddressCreateDTO dto = AddressCreator.createIncompleteAddressCreateDTO();
+        Throwable thrown = Assertions.catchThrowable(() -> addressService.getOrCreateAddress(dto));
 
         Assertions.assertThat(thrown)
                 .isNotNull()
@@ -115,8 +113,8 @@ class AddressServiceTest {
     }
 
     @Test
-    @DisplayName("getOrCreateAddress returns a business exception when zip code format is invalid")
-    void getOrCreateAddress_ReturnsBusinessException_WhenZipCodeFormatIsInvalid() {
+    @DisplayName("Throws BusinessException when ZIP code format is invalid")
+    void getOrCreateAddress_ThrowsBusinessException_WhenZipCodeFormatIsInvalid() {
         BDDMockito.when(addressRepository.findByZipCode(ArgumentMatchers.anyString()))
                 .thenReturn(Optional.empty());
 
@@ -125,7 +123,7 @@ class AddressServiceTest {
 
         AddressCreateDTO dto = AddressCreator.createInvalidAddressCreateDTO();
 
-        Throwable thrown = Assertions.catchThrowable(() -> addressServiceMock.getOrCreateAddress(dto));
+        Throwable thrown = Assertions.catchThrowable(() -> addressService.getOrCreateAddress(dto));
 
         Assertions.assertThat(thrown)
                 .isNotNull()

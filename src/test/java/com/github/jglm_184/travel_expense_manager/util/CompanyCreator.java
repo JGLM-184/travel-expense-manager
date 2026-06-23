@@ -30,7 +30,7 @@ public class CompanyCreator {
                 .build();
     }
 
-    public static CompanyDetailsDTO createValidActiveCompanyDTODetails() {
+    public static CompanyDetailsDTO createActiveCompanyDetailsDTO() {
         return CompanyDetailsDTO.builder()
                 .id(1L)
                 .cnpj("11222333000100")
@@ -41,7 +41,7 @@ public class CompanyCreator {
                 .build();
     }
 
-    public static CompanyDetailsDTO createValidInactiveCompanyDTODetails() {
+    public static CompanyDetailsDTO createInactiveCompanyDetailsDTO() {
         return CompanyDetailsDTO.builder()
                 .id(1L)
                 .cnpj("11222333000100")
@@ -52,16 +52,16 @@ public class CompanyCreator {
                 .build();
     }
 
-    public static CompanyCreateDTO createCompanyCreateDTO() {
+    public static CompanyCreateDTO createValidCompanyCreateDTO() {
         return CompanyCreateDTO.builder()
                 .cnpj("11222333000100")
                 .companyName("Test Enterprise LTDA")
                 .tradeName("Test Company")
-                .headquarters(AddressCreator.createAddressCreateDTO())
+                .headquarters(AddressCreator.createValidAddressCreateDTO())
                 .build();
     }
 
-    public static ReceitaWSResponse createReceitaWSResponse() {
+    public static ReceitaWSResponse createValidReceitaWSResponse() {
         return com.github.jglm_184.travel_expense_manager.dto.ReceitaWSResponse.builder()
                 .companyName("Test Enterprise LTDA")
                 .tradeName("Test Company")
@@ -69,27 +69,17 @@ public class CompanyCreator {
                 .build();
     }
 
-    public static CompanyCreateDTO createCompanyCreateDTOWithOnlyCnpj() {
+    public static CompanyCreateDTO createValidCompanyCreateDTOWithOnlyCnpj() {
         return CompanyCreateDTO.builder()
                 .cnpj("11222333000100")
                 .build();
     }
 
-    public static CompanyUpdateDTO createCompanyUpdateDTO() {
+    public static CompanyUpdateDTO createValidCompanyUpdateDTO() {
         return CompanyUpdateDTO.builder()
                 .companyName("Updated Enterprise Name LTDA")
                 .tradeName("Updated Company Brand")
-                .headquarters(AddressCreator.createAddressCreateDTO())
+                .headquarters(AddressCreator.createValidAddressCreateDTO())
                 .build();
     }
-
-    public static CompanyUpdateDTO createCompanyUpdateDTOWithBlankFields() {
-        return CompanyUpdateDTO.builder()
-                .companyName("")
-                .tradeName(null)
-                .headquarters(AddressCreator.createAddressCreateDTO())
-                .build();
-    }
-
-
 }
