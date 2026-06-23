@@ -5,7 +5,7 @@ import com.github.jglm_184.travel_expense_manager.dto.AddressDetailsDTO;
 import com.github.jglm_184.travel_expense_manager.dto.ViaCepResponse;
 import com.github.jglm_184.travel_expense_manager.model.Address;
 
-public class AddressDTOCreator {
+public class AddressCreator {
 
     public static Address createValidAddress() {
         return Address.builder()
@@ -54,6 +54,17 @@ public class AddressDTOCreator {
     public static AddressCreateDTO createInvalidAddressCreateDTO() {
         return AddressCreateDTO.builder()
                 .zipCode("111111111")
+                .build();
+    }
+
+    public static AddressDetailsDTO createAddressDetailsDTO() {
+        return AddressDetailsDTO.builder()
+                .id(1L)
+                .zipCode("01001000")
+                .street("Praça da Sé")
+                .neighborhood("Sé")
+                .city("São Paulo")
+                .state("São Paulo")
                 .build();
     }
 

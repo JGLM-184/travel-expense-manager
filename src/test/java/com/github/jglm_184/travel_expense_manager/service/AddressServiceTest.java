@@ -7,7 +7,7 @@ import com.github.jglm_184.travel_expense_manager.exception.ResourceNotFoundExce
 import com.github.jglm_184.travel_expense_manager.mapper.AddressMapper;
 import com.github.jglm_184.travel_expense_manager.model.Address;
 import com.github.jglm_184.travel_expense_manager.repository.AddressRepository;
-import com.github.jglm_184.travel_expense_manager.util.AddressDTOCreator;
+import com.github.jglm_184.travel_expense_manager.util.AddressCreator;
 import com.github.jglm_184.travel_expense_manager.util.FormatterUtil;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,16 +43,16 @@ class AddressServiceTest {
     @BeforeEach
     void setUp() {
         BDDMockito.when(addressRepository.findByZipCode(ArgumentMatchers.anyString()))
-                .thenReturn(Optional.of(AddressDTOCreator.createValidAddress()));
+                .thenReturn(Optional.of(AddressCreator.createValidAddress()));
 
         BDDMockito.when(addressRepository.save(ArgumentMatchers.any(Address.class)))
-                .thenReturn(AddressDTOCreator.createValidAddress());
+                .thenReturn(AddressCreator.createValidAddress());
 
         BDDMockito.when(viaCepClient.findAddress(ArgumentMatchers.anyString()))
-                .thenReturn(AddressDTOCreator.createViaCepResponse());
+                .thenReturn(AddressCreator.createViaCepResponse());
 
         BDDMockito.when(addressMapper.toAddress(ArgumentMatchers.any(AddressCreateDTO.class)))
-                .thenReturn(AddressDTOCreator.createValidAddress());
+                .thenReturn(AddressCreator.createValidAddress());
 
         BDDMockito.when(formatterUtil.cleanNumbers(ArgumentMatchers.anyString()))
                 .thenReturn("01001000");
@@ -62,11 +62,11 @@ class AddressServiceTest {
     @DisplayName("getOrCreateAddress returns a registered address when the provided ZIP code " +
             "is already registered in the database when successful")
     void getOrCreateAddress_ReturnsRegisteredAdddress_WhenSuccessful() {
-        Address validAddress = AddressDTOCreator.createValidAddress();
+        Address validAddress = AddressCreator.createValidAddress();
         Long expectedId = validAddress.getId();
         String expectedZipCode = validAddress.getZipCode();
 
-        AddressCreateDTO dto = AddressDTOCreator.createAddressCreateDTO();
+        AddressCreateDTO dto = AddressCreator.createAddressCreateDTO();
         Address addressForAssertion = addressServiceMock.getOrCreateAddress(dto);
 
         Assertions.assertThat(addressForAssertion).isNotNull();
@@ -84,12 +84,12 @@ class AddressServiceTest {
         BDDMockito.when(addressRepository.findByZipCode(ArgumentMatchers.anyString()))
                 .thenReturn(Optional.empty());
 
-        AddressCreateDTO dto = AddressDTOCreator.createAddressCreateDTO();
+        AddressCreateDTO dto = AddressCreator.createAddressCreateDTO();
         Address addressForAssertion = addressServiceMock.getOrCreateAddress(dto);
 
         Assertions.assertThat(addressForAssertion)
                 .isNotNull()
-                .isEqualTo(AddressDTOCreator.createValidAddress());
+                .isEqualTo(AddressCreator.createValidAddress());
 
         BDDMockito.then(addressRepository).should().save(ArgumentMatchers.any(Address.class));
     }
@@ -101,9 +101,9 @@ class AddressServiceTest {
                 .thenReturn(Optional.empty());
 
         BDDMockito.when(viaCepClient.findAddress(ArgumentMatchers.anyString()))
-                .thenReturn(AddressDTOCreator.createViaCepResponseWithError());
+                .thenReturn(AddressCreator.createViaCepResponseWithError());
 
-        AddressCreateDTO dto = AddressDTOCreator.createAddressCreateDTONotFullyFilled();
+        AddressCreateDTO dto = AddressCreator.createAddressCreateDTONotFullyFilled();
         Throwable thrown = Assertions.catchThrowable(() -> addressServiceMock.getOrCreateAddress(dto));
 
         Assertions.assertThat(thrown)
@@ -123,7 +123,7 @@ class AddressServiceTest {
         BDDMockito.when(viaCepClient.findAddress(ArgumentMatchers.anyString()))
                 .thenThrow(new HttpClientErrorException(HttpStatus.BAD_REQUEST));
 
-        AddressCreateDTO dto = AddressDTOCreator.createInvalidAddressCreateDTO();
+        AddressCreateDTO dto = AddressCreator.createInvalidAddressCreateDTO();
 
         Throwable thrown = Assertions.catchThrowable(() -> addressServiceMock.getOrCreateAddress(dto));
 
