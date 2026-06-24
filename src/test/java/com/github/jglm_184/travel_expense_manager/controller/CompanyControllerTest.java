@@ -67,8 +67,7 @@ class CompanyControllerTest {
     @Test
     @DisplayName("Returns a page of active companies when companies exist")
     void findAllActiveCompanies_ReturnsPageOfActiveCompanies_WhenCompaniesExist() {
-        String expectedCompanyName =
-                CompanyCreator.createActiveCompanyDetailsDTO().getCompanyName();
+        String expectedCompanyName = CompanyCreator.createActiveCompanyDetailsDTO().getCompanyName();
 
         ResponseEntity<Page<CompanyDetailsDTO>> responseEntity =
                 companyController.findAllActiveCompanies(null);

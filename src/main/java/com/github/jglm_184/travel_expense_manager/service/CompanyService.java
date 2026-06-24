@@ -48,12 +48,14 @@ public class CompanyService {
             throw new BusinessException("Company with this CNPJ already exists");
         }
 
+        Company receitaWsData = fetchFromReceitaWs(cnpj);
+
         Company companyToBeSaved;
 
         if (companyCreateDTO.isFullyFilled()) {
             companyToBeSaved = companyMapper.toCompany(companyCreateDTO);
         } else {
-            companyToBeSaved = fetchFromReceitaWs(cnpj);
+            companyToBeSaved = receitaWsData;
         }
 
         companyToBeSaved.setCnpj(cnpj);
@@ -75,16 +77,18 @@ public class CompanyService {
         String newCompanyName = companyUpdateDTO.getCompanyName();
         String newTradeName = companyUpdateDTO.getTradeName();
 
-        if(newCompanyName != null && !newCompanyName.isBlank()) {
+        if (newCompanyName != null && !newCompanyName.isBlank()) {
             companyToBeUpdate.setCompanyName(newCompanyName);
         }
 
-        if(newTradeName != null && !newTradeName.isBlank()) {
+        if (newTradeName != null && !newTradeName.isBlank()) {
             companyToBeUpdate.setTradeName(newTradeName);
         }
 
-        Address headquarters = addressService.getOrCreateAddress(companyUpdateDTO.getHeadquarters());
-        companyToBeUpdate.setHeadquarters(headquarters);
+        if (companyUpdateDTO.getHeadquarters() != null) {
+            Address headquarters = addressService.getOrCreateAddress(companyUpdateDTO.getHeadquarters());
+            companyToBeUpdate.setHeadquarters(headquarters);
+        }
 
         Company companyUpdated = companyRepository.save(companyToBeUpdate);
 

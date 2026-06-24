@@ -11,7 +11,7 @@ public class CompanyCreator {
     public static Company createValidActiveCompany() {
         return Company.builder()
                 .id(1L)
-                .cnpj("11222333000100")
+                .cnpj("06990590000123")
                 .companyName("Test Enterprise LTDA")
                 .tradeName("Test Company")
                 .headquarters(AddressCreator.createValidAddress())
@@ -19,10 +19,19 @@ public class CompanyCreator {
                 .build();
     }
 
+    public static Company createValidActiveCompanyToBeSaved() {
+        return Company.builder()
+                .cnpj("06990590000123")
+                .companyName("Test Enterprise LTDA")
+                .tradeName("Test Company")
+                .active(true)
+                .build();
+    }
+
     public static Company createValidInactiveCompany() {
         return Company.builder()
                 .id(1L)
-                .cnpj("11222333000100")
+                .cnpj("06990590000123")
                 .companyName("Test Enterprise LTDA")
                 .tradeName("Test Company")
                 .headquarters(AddressCreator.createValidAddress())
@@ -30,10 +39,19 @@ public class CompanyCreator {
                 .build();
     }
 
+    public static Company createValidInactiveCompanyToBeSaved() {
+        return Company.builder()
+                .cnpj("06990590000123")
+                .companyName("Test Enterprise LTDA")
+                .tradeName("Test Company")
+                .active(false)
+                .build();
+    }
+
     public static CompanyDetailsDTO createActiveCompanyDetailsDTO() {
         return CompanyDetailsDTO.builder()
                 .id(1L)
-                .cnpj("11222333000100")
+                .cnpj("06990590000123")
                 .companyName("Test Enterprise LTDA")
                 .tradeName("Test Company")
                 .headquarters(AddressCreator.createAddressDetailsDTO())
@@ -44,7 +62,7 @@ public class CompanyCreator {
     public static CompanyDetailsDTO createInactiveCompanyDetailsDTO() {
         return CompanyDetailsDTO.builder()
                 .id(1L)
-                .cnpj("11222333000100")
+                .cnpj("06990590000123")
                 .companyName("Test Enterprise LTDA")
                 .tradeName("Test Company")
                 .headquarters(AddressCreator.createAddressDetailsDTO())
@@ -54,7 +72,7 @@ public class CompanyCreator {
 
     public static CompanyCreateDTO createValidCompanyCreateDTO() {
         return CompanyCreateDTO.builder()
-                .cnpj("11222333000100")
+                .cnpj("06990590000123")
                 .companyName("Test Enterprise LTDA")
                 .tradeName("Test Company")
                 .headquarters(AddressCreator.createValidAddressCreateDTO())
@@ -71,7 +89,7 @@ public class CompanyCreator {
 
     public static CompanyCreateDTO createValidCompanyCreateDTOWithOnlyCnpj() {
         return CompanyCreateDTO.builder()
-                .cnpj("11222333000100")
+                .cnpj("06990590000123")
                 .build();
     }
 

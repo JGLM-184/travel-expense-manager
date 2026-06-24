@@ -112,43 +112,48 @@ class CompanyServiceTest {
     @Test
     @DisplayName("Saves and returns company details when DTO is fully filled")
     void createCompany_SavesAndReturnsCompanyDetails_WhenDTOIsFullyFilled() {
-        CompanyCreateDTO dto = CompanyCreator.createValidCompanyCreateDTO();
-        Company companyToSave = CompanyCreator.createValidActiveCompany();
+        CompanyCreateDTO companyToBeSaved = CompanyCreator.createValidCompanyCreateDTO();
+        Company companySaved = CompanyCreator.createValidActiveCompany();
         CompanyDetailsDTO expectedResponse = CompanyCreator.createActiveCompanyDetailsDTO();
+
+        BDDMockito.when(formatterUtil.cleanNumbers(ArgumentMatchers.anyString()))
+                .thenReturn("06990590000123");
 
         BDDMockito.when(addressService.getOrCreateAddress(ArgumentMatchers.any()))
                 .thenReturn(AddressCreator.createValidAddress());
 
         BDDMockito.when(companyMapper.toCompany(ArgumentMatchers.any(CompanyCreateDTO.class)))
-                .thenReturn(companyToSave);
+                .thenReturn(companySaved);
 
         BDDMockito.when(companyRepository.save(ArgumentMatchers.any(Company.class)))
-                .thenReturn(companyToSave);
+                .thenReturn(companySaved);
 
         BDDMockito.when(companyMapper.toDto(ArgumentMatchers.any(Company.class)))
                 .thenReturn(expectedResponse);
 
-        CompanyDetailsDTO actualResponse = companyService.createCompany(dto);
+        BDDMockito.when(receitaWSClient.findCnpj(ArgumentMatchers.anyString()))
+                .thenReturn(CompanyCreator.createValidReceitaWSResponse());
+
+        CompanyDetailsDTO actualResponse = companyService.createCompany(companyToBeSaved);
 
         Assertions.assertThat(actualResponse).isNotNull();
-        Assertions.assertThat(actualResponse.getCnpj()).isEqualTo(dto.getCnpj());
-        Assertions.assertThat(actualResponse.getCompanyName()).isEqualTo(dto.getCompanyName());
+        Assertions.assertThat(actualResponse.getCnpj()).isEqualTo(companyToBeSaved.getCnpj());
+        Assertions.assertThat(actualResponse.getCompanyName()).isEqualTo(companyToBeSaved.getCompanyName());
         Assertions.assertThat(actualResponse.isActive()).isTrue();
 
         BDDMockito.then(addressService).should().getOrCreateAddress(ArgumentMatchers.any());
         BDDMockito.then(companyRepository).should().save(ArgumentMatchers.any(Company.class));
-        BDDMockito.verifyNoInteractions(receitaWSClient);
     }
 
     @Test
     @DisplayName("Fetches company data from ReceitaWS and returns company details when only CNPJ is provided")
     void createCompany_FetchesDataFromReceitaWSAndReturnsCompanyDetails_WhenOnlyCnpjIsProvided() {
-        CompanyCreateDTO dto = CompanyCreator.createValidCompanyCreateDTOWithOnlyCnpj();
-        Company companyToSave = CompanyCreator.createValidActiveCompany();
+        CompanyCreateDTO companyToBeSaved = CompanyCreator.createValidCompanyCreateDTOWithOnlyCnpj();
+        Company companySaved = CompanyCreator.createValidActiveCompany();
         CompanyDetailsDTO expectedResponse = CompanyCreator.createActiveCompanyDetailsDTO();
 
         BDDMockito.when(formatterUtil.cleanNumbers(ArgumentMatchers.anyString()))
-                .thenReturn("11222333000100");
+                .thenReturn("06990590000123");
 
         BDDMockito.when(receitaWSClient.findCnpj(ArgumentMatchers.anyString()))
                 .thenReturn(CompanyCreator.createValidReceitaWSResponse());
@@ -157,15 +162,15 @@ class CompanyServiceTest {
                 .thenReturn(AddressCreator.createValidAddress());
 
         BDDMockito.when(companyMapper.toCompany(ArgumentMatchers.any(ReceitaWSResponse.class)))
-                .thenReturn(companyToSave);
+                .thenReturn(companySaved);
 
         BDDMockito.when(companyRepository.save(ArgumentMatchers.any(Company.class)))
-                .thenReturn(companyToSave);
+                .thenReturn(companySaved);
 
         BDDMockito.when(companyMapper.toDto(ArgumentMatchers.any(Company.class)))
                 .thenReturn(expectedResponse);
 
-        CompanyDetailsDTO actualResponse = companyService.createCompany(dto);
+        CompanyDetailsDTO actualResponse = companyService.createCompany(companyToBeSaved);
 
         Assertions.assertThat(actualResponse).isNotNull();
         Assertions.assertThat(actualResponse.getCnpj()).isEqualTo(expectedResponse.getCnpj());
@@ -183,9 +188,9 @@ class CompanyServiceTest {
         CompanyCreateDTO dto = CompanyCreator.createValidCompanyCreateDTO();
 
         BDDMockito.when(formatterUtil.cleanNumbers(ArgumentMatchers.anyString()))
-                .thenReturn("11222333000100");
+                .thenReturn("06990590000123");
 
-        BDDMockito.when(companyRepository.findByCnpj("11222333000100"))
+        BDDMockito.when(companyRepository.findByCnpj("06990590000123"))
                 .thenReturn(Optional.of(CompanyCreator.createValidActiveCompany()));
 
         Throwable thrown = Assertions.catchThrowable(() -> companyService.createCompany(dto));

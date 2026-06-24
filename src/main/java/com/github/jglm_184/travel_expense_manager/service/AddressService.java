@@ -29,16 +29,14 @@ public class AddressService {
 
         return addressRepository.findByZipCode(zipCode)
                 .orElseGet(() -> {
+                    Address viaCepData = fetchFromViaCep(zipCode);
                     Address address;
-
                     if (addressCreateDTO.isFullyFilled()) {
                         address = addressMapper.toAddress(addressCreateDTO);
                     } else {
-                        address = fetchFromViaCep(zipCode);
+                        address = viaCepData;
                     }
-
                     address.setZipCode(zipCode);
-
                     return addressRepository.save(address);
                 });
     }
@@ -48,7 +46,7 @@ public class AddressService {
             ViaCepResponse response = viaCepClient.findAddress(zipCode);
 
             if (response == null || response.isError()) {
-                throw new ResourceNotFoundException("The provided zipCode does not exist.");
+                throw new BusinessException("The provided zipCode does not exist.");
             }
 
             return addressMapper.toAddress(response);

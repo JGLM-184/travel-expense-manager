@@ -93,8 +93,8 @@ class AddressServiceTest {
     }
 
     @Test
-    @DisplayName("Throws ResourceNotFoundException when ZIP code does not exist")
-    void getOrCreateAddress_ThrowsResourceNotFoundException_WhenZipCodeDoesNotExist() {
+    @DisplayName("Throws BusinessException when ZIP code does not exist")
+    void getOrCreateAddress_ThrowsBusinessException_WhenZipCodeDoesNotExist() {
         BDDMockito.when(addressRepository.findByZipCode(ArgumentMatchers.anyString()))
                 .thenReturn(Optional.empty());
 
@@ -106,7 +106,7 @@ class AddressServiceTest {
 
         Assertions.assertThat(thrown)
                 .isNotNull()
-                .isInstanceOf(ResourceNotFoundException.class)
+                .isInstanceOf(BusinessException.class)
                 .hasMessageContaining("The provided zipCode does not exist.");
 
         BDDMockito.then(addressRepository).should(BDDMockito.never()).save(ArgumentMatchers.any(Address.class));

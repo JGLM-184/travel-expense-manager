@@ -18,7 +18,27 @@ public class AddressCreator {
                 .build();
     }
 
+    public static Address createValidAddressToBeSaved() {
+        return Address.builder()
+                .zipCode("01001000")
+                .street("Praça da Sé")
+                .neighborhood("Sé")
+                .city("São Paulo")
+                .state("São Paulo")
+                .build();
+    }
+
     public static AddressCreateDTO createValidAddressCreateDTO() {
+        return AddressCreateDTO.builder()
+                .zipCode("01001000")
+                .street("Praça da Sé")
+                .neighborhood("Sé")
+                .city("São Paulo")
+                .state("São Paulo")
+                .build();
+    }
+
+    public static AddressCreateDTO createInvalidAddressCreateDTOFullyFilled() {
         return AddressCreateDTO.builder()
                 .zipCode("11111111")
                 .street("Praça da Sé")
