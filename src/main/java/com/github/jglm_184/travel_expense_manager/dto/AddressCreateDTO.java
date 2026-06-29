@@ -1,7 +1,7 @@
 package com.github.jglm_184.travel_expense_manager.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Data;
 
@@ -9,7 +9,7 @@ import lombok.Data;
 @Builder
 @Schema(description = "Data transfer object for creating an address")
 public class AddressCreateDTO {
-    @NotEmpty(message = "The zipCode of Address cannot be empty or null")
+    @NotBlank(message = "The zipCode of Address cannot be empty or null")
     @Schema(description = "The Brazilian postal code (CEP), digits only or formatted", example = "01311200")
     private String zipCode;
     @Schema(description = "Street name or public thoroughfare", example = "Avenida Paulista")

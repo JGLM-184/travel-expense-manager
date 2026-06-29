@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
@@ -26,6 +27,7 @@ public class CompanyController {
     private final CompanyService companyService;
 
     @GetMapping("/active")
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(
             summary = "List all active companies paginated",
             description = "Retrieves a paginated list of companies that are currently active in the system.",
@@ -41,6 +43,7 @@ public class CompanyController {
     }
 
     @GetMapping("/inactive")
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(
             summary = "List all inactive companies paginated",
             description = "Retrieves a paginated list of companies that are currently inactive in the system.",
@@ -56,6 +59,7 @@ public class CompanyController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(
             summary = "Create a new company",
             description = "Registers a new company. If only the CNPJ is provided, the system will " +
@@ -72,6 +76,7 @@ public class CompanyController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(
             summary = "Update an active company",
             description = "Updates the registration details (such as company name, trade name, " +
@@ -90,6 +95,7 @@ public class CompanyController {
     }
 
     @PutMapping("/activate/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(
             summary = "Activate an inactive company by ID",
             description = "Changes the status of a specific company to active, allowing it to be used across " +
@@ -105,6 +111,7 @@ public class CompanyController {
     }
 
     @PutMapping("/deactivate/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(
             summary = "Deactivate an active company by ID",
             description = "Changes the status of a specific company to inactive. Deactivated companies will no " +

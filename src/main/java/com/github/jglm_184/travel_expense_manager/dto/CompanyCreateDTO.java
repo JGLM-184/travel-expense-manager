@@ -2,7 +2,7 @@ package com.github.jglm_184.travel_expense_manager.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Data;
 
@@ -10,7 +10,7 @@ import lombok.Data;
 @Builder
 @Schema(description = "Data transfer object for creating a company")
 public class CompanyCreateDTO {
-    @NotEmpty(message = "The CNPJ cannot be empty or null")
+    @NotBlank(message = "The CNPJ cannot be empty or null")
     @Schema(description = "The Brazilian National Registry of Legal Entities (CNPJ)", example = "06990590000123")
     private String cnpj;
     @Schema(description = "The registered legal corporate name (Razão Social)", example = "Google Brasil Internet Ltda.")
