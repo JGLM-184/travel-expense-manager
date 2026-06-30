@@ -39,8 +39,10 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(HttpMethod.POST, "auth/login").permitAll()
-                        .anyRequest().authenticated())
+                        .requestMatchers("/error").permitAll()
+                        .requestMatchers("/companies/**").hasRole("ADMIN")
+                        .anyRequest().authenticated()
+                )
                 .csrf(csrf -> csrf.disable())
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())))
