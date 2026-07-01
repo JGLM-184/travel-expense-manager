@@ -58,4 +58,17 @@ public class UserCreator {
                 .companyId(1L)
                 .build();
     }
+
+    public static UserDetailsDTO createInactiveUserDetailsDTO() {
+        return UserDetailsDTO.builder()
+                .id(2L)
+                .name("Jane Doe")
+                .email("jane.doe@test.com")
+                .cpf("98765432100")
+                .employeeId("EMP-456")
+                .department("HR")
+                .role(Role.ROLE_EMPLOYEE)
+                .active(false)
+                .build();
+    }
 }

@@ -19,10 +19,11 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.*;
-import org.springframework.security.oauth2.jwt.JwtClaimsSet;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
-import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.List;
@@ -39,7 +40,6 @@ public class CompanyControllerIT {
     private CompanyRepository companyRepository;
     @Autowired
     private AddressRepository addressRepository;
-
     @Autowired
     private JwtEncoder jwtEncoder;
 

@@ -39,7 +39,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/error").permitAll()
+                        .requestMatchers("/error", "/auth/login", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/companies/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
