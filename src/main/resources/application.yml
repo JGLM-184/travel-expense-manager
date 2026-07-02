@@ -1,3 +1,8 @@
+app:
+  jwt:
+    public-key: ${JWT_PUBLIC_KEY:classpath:app.pub}
+    private-key: ${JWT_PRIVATE_KEY:classpath:app.key}
+
 spring:
   application:
     name: travel-expense-manager
@@ -14,3 +19,10 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          public-key: ${app.jwt.public-key}
+          private-key: ${app.jwt.private-key}

@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "company_tb")
+@Table(name = "tb_companies")
 public class Company {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,11 +20,16 @@ public class Company {
     @Column(unique = true, nullable = false)
     private String cnpj;
 
+    @Column(name = "company_name", nullable = false)
     private String companyName;
+
+    @Column(name = "trade_name", nullable = false)
     private String tradeName;
+
+    @Column(nullable = false)
     private boolean active;
 
-    @ManyToOne
-    @JoinColumn(name = "address_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "address_id", nullable = false)
     private Address headquarters;
 }

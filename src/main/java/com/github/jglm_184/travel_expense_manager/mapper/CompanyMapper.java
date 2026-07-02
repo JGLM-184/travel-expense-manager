@@ -13,9 +13,9 @@ public abstract class CompanyMapper {
 
     @Mapping(target = "headquarters", ignore = true)
     public abstract Company toCompany(CompanyCreateDTO dto);
+
     @Mapping(target = "headquarters", ignore = true)
     public abstract Company toCompany(ReceitaWSResponse response);
+
     public abstract CompanyDetailsDTO toDto(Company company);
-
-
 }
