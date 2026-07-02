@@ -71,4 +71,30 @@ public class UserCreator {
                 .active(false)
                 .build();
     }
+
+    public static User createValidActiveUserToBeSaved() {
+        return User.builder()
+                .name("John Doe")
+                .email("john.doe@test.com")
+                .password("password123")
+                .cpf("12345678901")
+                .employeeId("EMP-123")
+                .department("ENGINEERING")
+                .role(Role.ROLE_ADMIN)
+                .active(true)
+                .build();
+    }
+
+    public static User createValidInactiveUserToBeSaved() {
+        return User.builder()
+                .name("Jane Doe")
+                .email("jane.doe@test.com")
+                .password("password123")
+                .cpf("98765432100")
+                .employeeId("EMP-456")
+                .department("HR")
+                .role(Role.ROLE_EMPLOYEE)
+                .active(false)
+                .build();
+    }
 }
