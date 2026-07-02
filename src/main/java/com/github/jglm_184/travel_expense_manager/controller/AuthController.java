@@ -4,6 +4,9 @@ import com.github.jglm_184.travel_expense_manager.dto.LoginRequest;
 import com.github.jglm_184.travel_expense_manager.dto.LoginResponse;
 import com.github.jglm_184.travel_expense_manager.model.User;
 import com.github.jglm_184.travel_expense_manager.repository.UserRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +26,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/auth")
+@Tag(name = "Authentication", description = "Endpoints for user authentication and token generation")
 public class AuthController {
 
     private final JwtEncoder jwtEncoder;
@@ -30,6 +34,18 @@ public class AuthController {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @PostMapping("/login")
+    @Operation(
+            summary = "Authenticate user and generate JWT token",
+            description = "Validates user credentials (email and password). If the user exists, is active, and the " +
+                    "password matches, it generates a secure JWT token containing user scopes and company tenant ID.",
+            security = {},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Successfully authenticated. Returns the JWT token " +
+                            "and expiration time"),
+                    @ApiResponse(responseCode = "400", description = "Invalid request payload, invalid email/password, " +
+                            "or user account is currently inactive")
+            }
+    )
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
         Optional<User> userOptional = userRepository.findByEmail(loginRequest.getEmail());
 
