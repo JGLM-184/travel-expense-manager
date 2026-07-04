@@ -88,4 +88,24 @@ public class AddressCreator {
                 .build();
     }
 
+    public static Address createAnotherValidAddressToBeSaved() {
+        return Address.builder()
+                .zipCode("20040002")
+                .street("Rua da Assembleia")
+                .neighborhood("Centro")
+                .city("Rio de Janeiro")
+                .state("Rio de Janeiro")
+                .build();
+    }
+
+    public static Address createOneMoreValidAddressToBeSaved() {
+        return Address.builder()
+                .street("Rua das Flores")
+                .neighborhood("Centro")
+                .city("Campinas")
+                .state("SP")
+                .zipCode("13010000")
+                .build();
+    }
+
 }
