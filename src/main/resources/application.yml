@@ -26,3 +26,9 @@ spring:
         jwt:
           public-key: ${app.jwt.public-key}
           private-key: ${app.jwt.private-key}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, prometheus
