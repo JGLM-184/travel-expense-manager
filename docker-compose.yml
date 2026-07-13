@@ -1,5 +1,18 @@
 version: '3.8'
+
 services:
+  app:
+    build: .
+    container_name: travel-expense-app
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/travel_expense_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=root
+    depends_on:
+      - db
+
   db:
     image: postgres:16-alpine
     container_name: postgres-travel-db
@@ -21,8 +34,8 @@ services:
       - "--config.file=/etc/prometheus/prometheus.yml"
     ports:
       - "9090:9090"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+    depends_on:
+      - app
 
   grafana:
     image: grafana/grafana:latest
@@ -31,8 +44,12 @@ services:
       - "3000:3000"
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana-storage:/var/lib/grafana
+      - ./grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
     depends_on:
       - prometheus
 
 volumes:
   jglm-184_data:
+  grafana-storage:

@@ -32,8 +32,7 @@ build/
 ### VS Code ###
 .vscode/
 
-# JWT Criptographic Keys
-src/main/resources/app.pub
-src/main/resources/app.key
-*.pub
-*.key
+### .env and keys ###
+.env
+app.key
+app.pub
